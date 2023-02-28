@@ -134,37 +134,4 @@ public class ContaDAO {
             throw new RuntimeException(e);
         }
     }
-
-    public void deletar(Integer numeroDaConta) {
-        String sql = "DELETE FROM conta WHERE numero = ?";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, numeroDaConta);
-
-            ps.execute();
-            ps.close();
-            conn.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void alterarLogico(Integer numeroDaConta) {
-        PreparedStatement ps;
-        String sql = "UPDATE conta SET esta_ativa = false WHERE numero = ?";
-
-        try {
-            ps = conn.prepareStatement(sql);
-
-            ps.setInt(1, numeroDaConta);
-
-            ps.execute();
-            ps.close();
-            conn.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
