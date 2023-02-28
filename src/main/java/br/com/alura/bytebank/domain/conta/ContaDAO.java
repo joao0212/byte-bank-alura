@@ -18,7 +18,7 @@ public class ContaDAO {
 
     public void salvar(DadosAberturaConta dadosDaConta) {
         var cliente = new Cliente(dadosDaConta.dadosCliente());
-        var conta = new Conta(dadosDaConta.numero(), BigDecimal.ZERO, cliente, true);
+        var conta = new Conta(dadosDaConta.numero(), BigDecimal.ZERO, cliente);
 
         String sql = "INSERT INTO conta (numero, saldo, cliente_nome, cliente_cpf, cliente_email)" +
                 "VALUES (?, ?, ?, ?, ?)";
@@ -31,7 +31,6 @@ public class ContaDAO {
             preparedStatement.setString(3, dadosDaConta.dadosCliente().nome());
             preparedStatement.setString(4, dadosDaConta.dadosCliente().cpf());
             preparedStatement.setString(5, dadosDaConta.dadosCliente().email());
-            preparedStatement.setBoolean(6, true);
 
             preparedStatement.execute();
             preparedStatement.close();
@@ -58,13 +57,12 @@ public class ContaDAO {
                 String nome = resultSet.getString(3);
                 String cpf = resultSet.getString(4);
                 String email = resultSet.getString(5);
-                Boolean estaAtiva = resultSet.getBoolean(6);
 
                 DadosCadastroCliente dadosCadastroCliente =
                         new DadosCadastroCliente(nome, cpf, email);
                 Cliente cliente = new Cliente(dadosCadastroCliente);
 
-                contas.add(new Conta(numero, saldo, cliente, estaAtiva));
+                contas.add(new Conta(numero, saldo, cliente));
             }
             resultSet.close();
             ps.close();
@@ -78,13 +76,13 @@ public class ContaDAO {
     public Conta listarPorNumero(Integer numero) {
         String sql = "SELECT * FROM conta WHERE numero = " + numero + " and esta_ativa = true";
 
-        Statement ps;
+        PreparedStatement ps;
         ResultSet resultSet;
         Conta conta = null;
         try {
             ps = conn.prepareStatement(sql);
-            //ps.setInt(1, numero);
-            resultSet = ps.executeQuery(sql);//ps.executeQuery();
+            ps.setInt(1, numero);
+            resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
                 Integer numeroRecuperado = resultSet.getInt(1);
@@ -92,13 +90,12 @@ public class ContaDAO {
                 String nome = resultSet.getString(3);
                 String cpf = resultSet.getString(4);
                 String email = resultSet.getString(5);
-                Boolean estaAtiva = resultSet.getBoolean(6);
 
                 DadosCadastroCliente dadosCadastroCliente =
                         new DadosCadastroCliente(nome, cpf, email);
                 Cliente cliente = new Cliente(dadosCadastroCliente);
 
-                conta = new Conta(numeroRecuperado, saldo, cliente, estaAtiva);
+                conta = new Conta(numeroRecuperado, saldo, cliente);
             }
             resultSet.close();
             ps.close();
