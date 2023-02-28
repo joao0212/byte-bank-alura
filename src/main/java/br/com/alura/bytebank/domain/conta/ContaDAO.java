@@ -78,13 +78,13 @@ public class ContaDAO {
     public Conta listarPorNumero(Integer numero) {
         String sql = "SELECT * FROM conta WHERE numero = " + numero + " and esta_ativa = true";
 
-        Statement ps;
+        PreparedStatement ps;
         ResultSet resultSet;
         Conta conta = null;
         try {
             ps = conn.prepareStatement(sql);
-            //ps.setInt(1, numero);
-            resultSet = ps.executeQuery(sql);//ps.executeQuery();
+            ps.setInt(1, numero);
+            resultSet = ps.executeQuery();
 
             while (resultSet.next()) {
                 Integer numeroRecuperado = resultSet.getInt(1);
